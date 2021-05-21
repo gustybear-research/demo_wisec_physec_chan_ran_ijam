@@ -1,0 +1,40 @@
+Review #12A
+
+-------------------This is an interesting work, where current results are already promising, and it's also very useful that the demo setup can be accessed remotely.
+
+1. Are there requirements on how far away and/or at which angle the adversary must be for the defense to work? That is, if the adversary is close enough to on the legitimate parties, I'm assuming that an attack is still possible. It would be useful to clarify this in the demo.
+
+Response: This defense works regardless of where the eavesdropper positions its antenna. The original iJam scheme successfully stopped an eavesdropper, which operated in two optimal regions, high and low jamming power. In the first region, the eavesdropper can determine the jammed segments with high probability. Eve needs all salt packets to obtain the key, so to combat the attack, the transmitter sends a series of salts at different powers so that there will be at least one salt to be successfully jammed. In the second region, Alice and Bob take turns exchanging known random salts and jamming, so at most, Eve can only decode a salt from a single transmitter. This protocol becomes obsolete when Eve introduces multiple-antennas. Channel randomization adopts the power variability while providing an alternate solution to create uncertainty without needing a second jammer. 
+Change: A short explanation is inputed in section 3.3 "In the original scheme, iJam, Alice and Bob would alternate roles between transmitting and jamming to prevent adversaries who were unaffected by the jamming signals. Channel randomization replaces this method."
+
+2. The submission doesn't mention whether the code will be made public. I would encourage the authors to make this public as well (or at least publish the code after the full research project has been completed).
+Response: This is a good suggestion, I will make a mention in the demo section.
+Change: See Demo section paragraph 2:"The Labview graphical user interface (GUI), made available to the public, contains the controls and displays necessary for the demonstration."
+Spelling:
+- "But it cannot change the channel states between Alice and Eve or Alice and the Bob" => Extra "the" before Bob.
+
+Thank you for catching our grammatical error. We have corrected the mistake.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #12B
+===========================================================================
+
+
+Comments for author
+-------------------
+I appreciate the efforts of this submission, and I think this would be a great demo with a lot of discussions. Nevertheless, I would suggest you improve the UI of your LabView and Figure 1 of your system.
+
+I think the system diagram can be improved to make it easily accessible at first glance. In particular, it should be more clear which entities belong to which parties, e.g., antennas to Bob. What is the difference between red and blue arrows? What is the difference between the dotted and straight lines? Does Eve only have one or multiple antennas? Does Alice send noise, or is the noise added during the iJam block or even by the channel? Where exactly is the channel? Further, it is not clear to me if this setup is bidirectional or unidirectional communication. Maybe you could also highlight the difference between the iJam [4] and the proposal in the system diagram, as it would make it easier to explain your contribution. For example, you can say by adding this component; we improved the security.
+Response: I have taken your concern about the system model in figure 1, I made each party a different color, made the transmission from Alice solid lines and the the jamming signal dotted lines both of which are received by the three Rx antenna. I labelled all antenna Tx or Rx to be more clear. I changed the image to a singular person's silhouette because Eve is a single system with multiple antenna. For the case of this demo Eve is limited to two antenna.
+
+Also, I think the UI for the demonstration can be improved. At first glance, there is too much information available, which might be useful for experts but not for a user who might see this setup for the first time. I would suggest that you try to concentrate on the most useful information that is needed to understand the setup and your contribution. In my opinion, you should demonstrate how an attacker can recover the key if Alice's antenna does not change (simple iJam setup) and you other use can where the attacker can not recover the key, due to the rotating antennas. I think that would make it eyecatching and simple to understand. If you explain how everything works, you can use the UI, which is currently depicted.
+
+Response: We changed the figure to focus on the important graphical information that is of most interest to the audience. We also mention that we will demonstrate scenarios with and without channel randomization
+
+Yao's advice:
+A few suggestions on the revision: (1) the introduction does not conclude the contribution of this demo. 
+Added: "In this demonstration, the audience will be granted access to our Cybersecurity lab via live-stream to see the real-time effects of channel randomization on the intended receiver and multi-antenna eavesdropper."
+(2) the system (and adversary) model should only describe the entity involved and their capability, and their goals (3) the implementation should not be structured as such, instead have three subsections describe the implementation of channel randomization, AoD based channel predition/equalization, and friendly jamming based secure key exchange (state the underneath technique of instead of special term like iJam, which the reader might not understand.
+(4) There should be a short conclusion

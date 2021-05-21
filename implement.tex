@@ -1,0 +1,103 @@
+%\section{Review of iJam}
+%iJam is a novel static channel physical layer key generation method proposed by Gollakota et al. \cite{Gollakota_S}. In this scheme, Alice sends a clean OFDM transmission to Bob. And Bob simultaneously transmits the OFDM generated jamming signal at randomly selected time intervals. Alice repeats the same message until Bob has successfully jammed all of the time intervals. This process alone successfully prevents the single-antenna adversary from obtaining any information about a key exchange \cite{Gollakota_S}. However, in \cite{Steinmetzer_D}, a vulnerability exposes that a multi-antenna eavesdropper Eve can compare the captured waveforms from both of her antennas to differentiate between clean and jammed samples. In this way, the clean transmission can be spliced together after few transmissions, and the key can be known to Eve.
+
+
+% \section{Implementation}
+% \begin{figure*}[t]
+% \centering
+% \begin{minipage}{.3\textwidth}
+%   \centering
+%   \includegraphics[width=\linewidth]{Images/Physical setup.jpg}
+%   \captionof{figure}{Network Diagram}
+%   \label{fig:test1}
+% \end{minipage}%
+% \hspace{0.07\textwidth}
+% \begin{minipage}{.3\textwidth}
+%   \centering
+%   \includegraphics[width=\linewidth]{Images/Network Diagram.PNG}
+%   \captionof{figure}{Cybersecurity Lab}
+%   \label{fig:test2}
+% \end{minipage}
+% \hspace{0.07\textwidth}
+% \begin{minipage}{.3\textwidth}
+%   \centering
+%   \includegraphics[width=\linewidth]{Images/Network Diagram.PNG}
+%   \captionof{figure}{Cybersecurity Lab}
+%   \label{fig:test2}
+% \end{minipage}
+% \end{figure*}
+
+\subsection{Channel Randomization}
+The channel randomization is implemented by rotating a log-periodic dipole array (LPDA) antenna using a stepper motor. The half-width beam angle of the LDPA antenna's main lobe is approximately 60 degrees. Hence, rotating the antenna by 60 degrees can significantly change the channel state. The rotating speed of the step motor can vary from 1 RPM to 5 RPM. The rotation is carried out in sync with the data transmission, which prevents Eve from obtaining a channel equalization filter to correct the randomization effects.
+
+\subsection{Channel Prediction and Equalization}
+In our scheme, Alice predicts and cancels the channel randomization effect for Bob with a compressed sensing-based AoD estimation algorithm. The CSI between Alice and Bob (or Eve) is due to the combined result of multipath components and antenna patterns. The compressed sensing algorithm allows Alice to estimate the 360-degree AoD vector, which defines the multipath components. Given that Alice knows the antenna pattern for a specific antenna mode, the CSI can be computed as the inner product of the AoD distribution and the antenna pattern vector.
+%The scatters in the environment create multiple channel components over different AoDs. 
+
+To predict the wireless channel, Alice selects every antenna mode then transmits pilot symbols to Bob at each mode. Bob measures the corresponding CSI and sends it back to Alice using implicit feedback. Alice then estimates the AoD vector with the compressed sensing algorithm. Once known, Alice can predict the CSIs for all unused antenna modes and computes the corresponding precoding filter to cancel the changing channel effects for Bob.
+
+% For this experiment, Alice must initialize the angle of departure (AoD) algorithm to provide flawless communication with Bob. Under most circumstances, the AoD is stable across the entire coherence time. By randomizing the channel, Alice first needs to capture the physical channel and predict the maximum effect of all unique channel modes of the reconfigurable antenna. Alice selects multiple antenna modes and sends them to Bob. Bob then measures all of the related channel state information (CSI) and sends it back to Alice using implicit feedback. With this information, Alice can estimate all channels for all future antenna modes. For the entire coherence time, Alice can cancel the changing effects for the intended receiver.
+
+\subsection{Key Generation}
+With the addition of channel randomization and prediction we created a less complicated physical layer key generation method. In the original scheme, iJam, Alice and Bob switched roles between transmitting and jamming to prevent adversaries who were unaffected by the jamming signals. Channel randomization replaces this method. In our scheme, Alice sends clean OFDM symbols to Bob. Simultaneously, Bob transmits jamming signal at randomly selected time intervals. Alice repeats the same message until Bob has successfully jammed every bit. During this process, Eve compares the captured waveforms from both of her antennas to differentiate between clean and jammed samples.
+
+The bandwidth and frequency are carefully selected to optimize the trade-off between the speed and effect of randomization. The rotating antenna has a limit of 5 RPM with five unique channel modes. To put less strain on the AoD algorithm while providing ample security, 16-QAM is selected. To successfully transmit the repeated key before a new channel mode is selected, the transmission bandwidth is limited to 3.4 KHz. The key bits are randomly generated at Alice's side and shared with Bob through the software detailed in the appendix.
+
+%a 3.4Khz bandwidth if 16QAM is chosen fixed 5 RPM
+% the larger the QAM the more precise the equalization has to be
+
+%The execution of this experiment was performed with a program development and execution system called Labview. The graphical programming environment was necessary to quickly and easily program every facet of the experiment which include, equipment control, OFDM transmission, RF generation, program physical layer security algorithms, and real-time collection, observation and analysis of data thus giving birth to a program which implements a channel randomization protocol with the mission of augmenting iJam, a physical wireless security key generation protocol to prevent a multi-antenna eavesdropping attack.
+% \subsection{iJam}
+% iJam is a novel static channel physical layer key generation method. Firstly, Alice sends a clean OFDM transmission to Bob. Simultaneously, Bob transmits the OFDM generated jamming signal at randomly selected time intervals. Alice repeats the same message until Bob has successfully jammed all of the time intervals. During this process, Eve compares the captured waveforms from both of her antennae to differentiate between clean and jammed samples. However, with the implementation of channel randomization, Eve cannot make the distinction. 
+%\subsection{Channel Randomization}
+%Channel randomization has proven effective in augmenting other physical wireless security methods \cite{Pan_Y_2,Pan_Y_1}. For this experiment, Alice must initialize the Angle of Departure (AoD) algorithm. Under most circumstances, the AoD is stable across the entire coherent time. However, by randomizing the channel, Alice first needs to capture the physical channel, predict the maximum effect of all unique channel modes of the reconfigurable antenna within a coherent time. Alice selects multiple antenna modes and sends them to Bob. Bob then measures all of the related CSI and sends it back to Alice using implicit feedback. With this information, Alice can estimate all channels for all future antenna modes. For the entire coherent time, Alice can cancel the changing effects for the intended receiver. The continually changing channel state prevents Eve from initiating its spatial diversity algorithm. Without a stable channel, Eve cannot accurately compare the transmissions at the differing locations and can only rely on random guessing.
+
+% \begin{figure*}[h]
+%   \includegraphics[width=0.25\linewidth]{Images/LabVeiw1_fix.png}
+%   \hfill
+%   \includegraphics[width=0.25\linewidth]{Images/labview2.png}
+%   \hfill
+%   \includegraphics[width=0.25\linewidth]{Images/Figure3_sq.jpg}
+%   \caption{LabView GUI}
+%   \Description{caption}
+% \end{figure*}
+
+\begin{figure*}[t]
+%\centering
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/network_diagram.png}
+  \caption{}
+\end{subfigure}
+\hspace{0.05\textwidth}
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/physical_setup.jpg}
+  \caption{}
+\end{subfigure}%
+\hspace{0.05\textwidth}
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/alice_pattern.png}
+  \caption{}
+\end{subfigure}
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/LabVeiw1_fix.png}
+  \caption{}
+\end{subfigure}
+\hspace{0.05\textwidth}
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/labview2.png}
+  \caption{}
+\end{subfigure}%
+\hspace{0.05\textwidth}
+\begin{subfigure}[t]{0.23\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{Images/Figure3_sq.jpg}
+  \caption{}
+\end{subfigure}
+\caption{From top to bottom, left to right: (a) Network setup for remote demonstration. (b) Physical setup with Alice on the right, Bob and Eve on the left. (c) The radiation pattern of the LDPA antenna. (d-f) LabView panels to visualize CSIs and data transmissions.}
+\label{fig2}
+\end{figure*}
